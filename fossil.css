@@ -246,6 +246,10 @@ h1 {
 }
 
 /* Fossils with generated images */
+.item-skull, .item-bone, .item-claw {
+    mix-blend-mode: multiply;
+}
+
 .item-skull {
     background-image: url('fossil_skull.png');
     background-size: 120px 120px;
