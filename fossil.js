@@ -225,6 +225,25 @@ function handleCellClick(e) {
             }
         }
         addCollapse(10);
+    } else if (currentTool === 'xray') {
+        // Scan 5x5 area
+        for (let dr = -2; dr <= 2; dr++) {
+            for (let dc = -2; dc <= 2; dc++) {
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < GRID_ROWS && nc >= 0 && nc < GRID_COLS) {
+                    if (grid[nr][nc].itemId !== null && grid[nr][nc].layer > 0) {
+                        const cellEl = getCellElement(nr, nc);
+                        if (cellEl) {
+                            cellEl.classList.remove('xray-flash');
+                            void cellEl.offsetWidth; // Trigger reflow
+                            cellEl.classList.add('xray-flash');
+                        }
+                    }
+                }
+            }
+        }
+        addCollapse(5); // Medium damage
     }
 
     checkItems();
@@ -246,20 +265,24 @@ function hitCell(r, c, damage) {
 }
 
 function handleCellHover(e) {
-    if (currentTool !== 'hammer') return;
+    if (currentTool !== 'hammer' && currentTool !== 'xray') return;
     const r = parseInt(e.currentTarget.dataset.r);
     const c = parseInt(e.currentTarget.dataset.c);
     
-    for (let dr = -1; dr <= 1; dr++) {
-        for (let dc = -1; dc <= 1; dc++) {
+    const range = currentTool === 'xray' ? 2 : 1;
+    const hoverClass = currentTool === 'xray' ? 'xray-hover' : 'hammer-hover';
+    const centerClass = currentTool === 'xray' ? 'xray-center' : 'hammer-center';
+    
+    for (let dr = -range; dr <= range; dr++) {
+        for (let dc = -range; dc <= range; dc++) {
             const nr = r + dr;
             const nc = c + dc;
             if (nr >= 0 && nr < GRID_ROWS && nc >= 0 && nc < GRID_COLS) {
                 const cellEl = getCellElement(nr, nc);
                 if (cellEl) {
-                    cellEl.classList.add('hammer-hover');
+                    cellEl.classList.add(hoverClass);
                     if (dr === 0 && dc === 0) {
-                        cellEl.classList.add('hammer-center');
+                        cellEl.classList.add(centerClass);
                     }
                 }
             }
@@ -268,10 +291,10 @@ function handleCellHover(e) {
 }
 
 function handleCellLeave(e) {
-    if (currentTool !== 'hammer') return;
+    if (currentTool !== 'hammer' && currentTool !== 'xray') return;
     // Fast way to remove all hover classes
-    document.querySelectorAll('.hammer-hover, .hammer-center').forEach(el => {
-        el.classList.remove('hammer-hover', 'hammer-center');
+    document.querySelectorAll('.hammer-hover, .hammer-center, .xray-hover, .xray-center').forEach(el => {
+        el.classList.remove('hammer-hover', 'hammer-center', 'xray-hover', 'xray-center');
     });
 }
 
@@ -340,8 +363,8 @@ toolBtns.forEach(btn => {
         gridElement.dataset.tool = currentTool;
         
         // Remove hover classes just in case
-        document.querySelectorAll('.hammer-hover, .hammer-center').forEach(el => {
-            el.classList.remove('hammer-hover', 'hammer-center');
+        document.querySelectorAll('.hammer-hover, .hammer-center, .xray-hover, .xray-center').forEach(el => {
+            el.classList.remove('hammer-hover', 'hammer-center', 'xray-hover', 'xray-center');
         });
     });
 });
