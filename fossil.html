@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>化石発掘ゲーム | Portfolio</title>
+    <link rel="stylesheet" href="fossil.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> 戻る</a>
+            <h1>化石を発掘しよう！</h1>
+            <div class="stats">
+                <span class="found-items">発見: <span id="items-found">0</span> / <span id="items-total">0</span></span>
+            </div>
+        </header>
+
+        <div class="collapse-meter-container">
+            <div class="collapse-label">壁の崩壊ゲージ</div>
+            <div class="collapse-bar-bg">
+                <div id="collapse-bar" class="collapse-bar-fill"></div>
+            </div>
+        </div>
+
+        <div class="main-game-area">
+            <div id="game-grid" class="game-grid">
+                <!-- JavaScriptでグリッドが生成されます -->
+            </div>
+
+            <div class="tool-selection">
+                <div class="tool-btn active" id="tool-pickaxe" data-tool="pickaxe">
+                    <i class="fas fa-hammer"></i> <!-- Pickaxe icon approximate -->
+                    <span class="tool-name">ピッケル</span>
+                    <span class="tool-desc">狭い範囲を深く掘る<br>壁ダメージ：小</span>
+                </div>
+                <div class="tool-btn" id="tool-hammer" data-tool="hammer">
+                    <i class="fas fa-gavel"></i>
+                    <span class="tool-name">ハンマー</span>
+                    <span class="tool-desc">広い範囲を浅く掘る<br>壁ダメージ：大</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div id="modal-content" class="modal-content">
+            <h2 id="modal-title"></h2>
+            <p id="modal-desc"></p>
+            <button id="retry-btn" class="action-btn">もう一度挑戦する</button>
+        </div>
+    </div>
+
+    <script src="fossil.js"></script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+:root {
+    --bg-color: #1a1a24;
+    --text-color: #ffffff;
+    --primary-color: #ff9d00;
+    --primary-hover: #ffb74d;
+    --danger-color: #f44336;
+    
+    /* Rock layers colors */
+    --layer-0: #dfc8a5; /* Dirt background */
+    --layer-1: #c99b5b; /* Soft rock */
+    --layer-2: #8b6b45; /* Medium rock */
+    --layer-3: #5c4731; /* Hard rock */
+    --layer-4: #3c2f21; /* Very hard rock */
+    
+    /* Grid settings */
+    --cell-size: 40px;
+    --grid-cols: 15;
+    --grid-rows: 10;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.game-container {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Header */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.back-btn {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
+}
+
+.back-btn:hover {
+    color: var(--primary-color);
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff9d00, #ff5e00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stats {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Collapse Meter */
+.collapse-meter-container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.collapse-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #aaa;
+}
+
+.collapse-bar-bg {
+    width: 100%;
+    height: 12px;
+    background: #333;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.collapse-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4caf50, #ffeb3b, #f44336);
+    background-size: 200% 100%;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 6px;
+}
+
+.collapse-bar-fill.danger {
+    animation: pulse-danger 1s infinite;
+}
+
+@keyframes pulse-danger {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; box-shadow: 0 0 10px var(--danger-color); }
+    100% { opacity: 1; }
+}
+
+/* Main Game Area */
+.main-game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Grid */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), var(--cell-size));
+    grid-template-rows: repeat(var(--grid-rows), var(--cell-size));
+    gap: 2px;
+    background-color: var(--layer-0);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border-radius: 3px;
+    cursor: crosshair;
+    position: relative;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+/* Cell Layers (The Rock) */
+.cell[data-layer="0"] {
+    background-color: transparent;
+    cursor: default;
+}
+
+.cell[data-layer="1"] {
+    background-color: var(--layer-1);
+    box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.cell[data-layer="2"] {
+    background-color: var(--layer-2);
+    box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.15), inset -2px -2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.cell[data-layer="3"] {
+    background-color: var(--layer-3);
+    box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.1), inset -2px -2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.cell[data-layer="4"] {
+    background-color: var(--layer-4);
+    box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.05), inset -2px -2px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Hover effects based on selected tool */
+.game-grid[data-tool="pickaxe"] .cell:not([data-layer="0"]):hover {
+    filter: brightness(1.2);
+    transform: scale(0.95);
+}
+
+/* Hammer hover effect is handled via JS adding a class to multiple cells */
+.cell.hammer-hover {
+    filter: brightness(1.2);
+}
+.cell.hammer-center:not([data-layer="0"]) {
+    transform: scale(0.9);
+}
+
+/* Hit Animation */
+@keyframes hit-shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-2px, 1px) rotate(-1deg); }
+    50% { transform: translate(1px, -2px) rotate(1deg); }
+    75% { transform: translate(-1px, 2px) rotate(0deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.cell.hit {
+    animation: hit-shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Items */
+.item-part {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Behind the rock layer */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background-size: cover;
+    background-position: center;
+}
+
+/* When a cell is completely clear, reveal the item part */
+.cell[data-layer="0"] .item-part {
+    opacity: 1;
+}
+
+.item-part.fossil {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+.item-part.gem {
+    background: radial-gradient(circle at 30% 30%, #a2f2ff, #0099ff);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 153, 255, 0.5);
+    transform: scale(0.8);
+}
+
+/* The rock layer acts as an overlay */
+.cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Above the item */
+    pointer-events: none;
+    transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+.cell[data-layer="1"]::before { background-color: var(--layer-1); box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 0 rgba(0, 0, 0, 0.2); }
+.cell[data-layer="2"]::before { background-color: var(--layer-2); box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.15), inset -2px -2px 0 rgba(0, 0, 0, 0.3); }
+.cell[data-layer="3"]::before { background-color: var(--layer-3); box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.1), inset -2px -2px 0 rgba(0, 0, 0, 0.4); }
+.cell[data-layer="4"]::before { background-color: var(--layer-4); box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.05), inset -2px -2px 0 rgba(0, 0, 0, 0.5); }
+.cell[data-layer="0"]::before { display: none; }
+
+
+/* Tools */
+.tool-selection {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+.tool-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 150px;
+    text-align: center;
+}
+
+.tool-btn i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #888;
+    transition: color 0.3s ease;
+}
+
+.tool-name {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.tool-desc {
+    font-size: 0.75rem;
+    color: #aaa;
+    line-height: 1.4;
+}
+
+.tool-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tool-btn.active {
+    background: rgba(255, 157, 0, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(255, 157, 0, 0.2);
+}
+
+.tool-btn.active i {
+    color: var(--primary-color);
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: #232332;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-overlay.hidden .modal-content {
+    transform: translateY(30px);
+}
+
+.modal-content h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.modal-content p {
+    margin-bottom: 30px;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, var(--primary-color), #ff5e00);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 157, 0, 0.4);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+/* Item Discovery Animation */
+@keyframes item-discover {
+    0% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.1); filter: brightness(1.5) drop-shadow(0 0 10px gold); z-index: 10; }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+
+.item-discovered {
+    animation: item-discover 0.8s ease-in-out;
+}
