@@ -219,8 +219,6 @@ h1 {
     z-index: 0; /* Behind the rock layer */
     opacity: 0;
     transition: opacity 0.3s ease;
-    background-size: cover;
-    background-position: center;
 }
 
 /* When a cell is completely clear, reveal the item part */
@@ -228,14 +226,26 @@ h1 {
     opacity: 1;
 }
 
-.item-part.fossil {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+/* Fossils with generated images */
+.item-skull {
+    background-image: url('fossil_skull.png');
+    background-size: 120px 120px;
+    background-repeat: no-repeat;
 }
 
-.item-part.gem {
+.item-bone {
+    background-image: url('fossil_bone.png');
+    background-size: 160px 40px;
+    background-repeat: no-repeat;
+}
+
+.item-claw {
+    background-image: url('fossil_claw.png');
+    background-size: 80px 120px;
+    background-repeat: no-repeat;
+}
+
+.item-gem1, .item-gem2 {
     background: radial-gradient(circle at 30% 30%, #a2f2ff, #0099ff);
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(0, 153, 255, 0.5);

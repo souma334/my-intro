@@ -145,7 +145,7 @@ function placeItems() {
                 for (let c = 0; c < shapeCols; c++) {
                     if (shape[r][c] === 1) {
                         grid[startR + r][startC + c].itemId = itemId;
-                        newItem.cells.push({ r: startR + r, c: startC + c });
+                        newItem.cells.push({ r: startR + r, c: startC + c, localR: r, localC: c });
                     }
                 }
             }
@@ -173,7 +173,15 @@ function renderGrid() {
             if (cellData.itemId !== null) {
                 const itemData = items[cellData.itemId];
                 const itemPart = document.createElement('div');
-                itemPart.classList.add('item-part', itemData.type);
+                itemPart.classList.add('item-part', 'item-' + itemData.name);
+                
+                if (itemData.type === 'fossil') {
+                    const cellObj = itemData.cells.find(pos => pos.r === r && pos.c === c);
+                    if (cellObj) {
+                        itemPart.style.backgroundPosition = `-${cellObj.localC * 40}px -${cellObj.localR * 40}px`;
+                    }
+                }
+                
                 cellEl.appendChild(itemPart);
             }
 
